@@ -384,7 +384,7 @@ import WebSocket from "ws";
 
 const clients: WebSocket[] = [];
 
-const mqttClient = mqtt.connect("mqtt://localhost:1883");
+const mqttClient = mqtt.connect("mqtt://192.168.1.109:1883");
 
 mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");

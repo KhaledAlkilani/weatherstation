@@ -1,19 +1,19 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-const apiClient = axios.create({
-  baseURL: "http://192.168.1.109:5000/api",
-  timeout: 5000,
-});
+// const apiClient = axios.create({
+//   baseURL: "http://192.168.1.109:5000/api",
+//   timeout: 5000,
+// });
 
-export async function getWeatherData() {
-  try {
-    const response: AxiosResponse = await apiClient.get("/weather");
-    return response.data;
-  } catch (error) {
-    const err = error as AxiosError;
-    throw new Error(`Error fetching weather data. ${err.response?.data}`);
-  }
-}
+// export async function getWeatherData() {
+//   try {
+//     const response: AxiosResponse = await apiClient.get("/weather");
+//     return response.data;
+//   } catch (error) {
+//     const err = error as AxiosError;
+//     throw new Error(`Error fetching weather data. ${err.response?.data}`);
+//   }
+// }
 
 // export const createWebSocket = (
 //   url: string,

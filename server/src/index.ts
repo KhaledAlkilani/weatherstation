@@ -1,4 +1,4 @@
-import app from "./app";
+
 
 // const PORT = 5000;
 
@@ -30,7 +30,7 @@ import app from "./app";
 // // Setup MQTT client
 // setupMQTT();
 
-import express from "express";
+import app from "./app";
 import { Server } from "http";
 import WebSocket from "ws";
 import { startMqttClient } from "./services/mqttClient";
@@ -39,7 +39,7 @@ import { setupWebSocketServer } from "./services/WebSocket";
 const port = 5000;
 
 const server: Server = app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
+  console.log(`Server listening on http://192.168.1.109:${port}`);
 });
 
 // WebSocket server
