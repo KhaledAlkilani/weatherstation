@@ -14,10 +14,8 @@ app.use(
 
 app.get("/api/temperature-history", async (req, res) => {
   try {
-    // Fetch the last 10 temperature records, sorted by timestamp (most recent first)
-    const temperatureHistory = await Weather.find()
-      .sort({ timestamp: -1 })
-      .limit(10);
+    // Fetch all temperature records, sorted by timestamp (most recent first)
+    const temperatureHistory = await Weather.find().sort({ timestamp: -1 });
     res.json(temperatureHistory);
   } catch (error) {
     console.error("Error fetching temperature history:", error);
