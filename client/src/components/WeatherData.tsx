@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
 import { WeatherData } from "../models/WeatherModel";
+import temperatureIcon from "../assets/temperature-icon.svg";
+
+const containerStyle: React.CSSProperties = {
+  backgroundColor: "#242424",
+  margin: "0 auto",
+  padding: 0,
+  height: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "column",
+};
 
 const WeatherStation = () => {
   const [temperature, setTemperature] = useState<WeatherData | null>(null);
@@ -29,17 +41,40 @@ const WeatherStation = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Weather Station</h1>
+    <div style={containerStyle}>
+      <h1 style={styles.title}>Weather Station</h1>
       {temperature ? (
-        <div>
-          <p>Temperature: {temperature.temperature} °C</p>
+        <div style={styles.temperatureAndIcon}>
+          <img src={temperatureIcon} alt="Temperature icon" width={30} />
+          <p style={styles.temperature}>
+            Temperature: {temperature.temperature} °C
+          </p>
         </div>
       ) : (
-        <p style={{ color: "white" }}>Loading weather data...</p>
+        <p style={{ color: "rgba(255, 255, 255, 0.87)" }}>
+          Loading weather data...
+        </p>
       )}
     </div>
   );
 };
 
 export default WeatherStation;
+
+const styles = {
+  temperatureAndIcon: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 6,
+  },
+  title: {
+    color: "rgba(255, 255, 255, 0.87)",
+    fontSize: "3.2em",
+    lineHeight: 1.1,
+  },
+  temperature: {
+    fontSize: 22,
+    color: "rgba(255, 255, 255, 0.87)",
+  },
+};
