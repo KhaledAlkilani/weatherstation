@@ -15,12 +15,13 @@ mongoose
 // Weather data schema
 const weatherSchema = new mongoose.Schema({
   temperature: { type: Number, required: true },
+  humidity: { type: Number, required: true },
   timestamp: { type: Date, default: Date.now },
 });
 
-const Weather = mongoose.model("Weather", weatherSchema);
+export const Weather = mongoose.model("Weather", weatherSchema);
 
-const mqttClient = mqtt.connect("mqtt://localhost:1883");
+const mqttClient = mqtt.connect("mqtt://172.20.49.44:1883");
 
 mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
@@ -43,19 +44,22 @@ mqttClient.on("message", (topic, message) => {
 
       // Check if the temperature field is available and is a valid number
       const temperature = parseFloat(parsedData.temperature);
+      const humidity = parseFloat(parsedData.humidity);
 
-      if (isNaN(temperature)) {
-        console.error(
-          "Received invalid temperature data:",
-          parsedData.temperature
-        );
+      if (isNaN(temperature) || isNaN(humidity)) {
+        console.error("Received invalid data:", parsedData);
       } else {
-        console.log("Real-time Temperature received: ", temperature);
+        console.log(
+          "Real-time Temperature: ",
+          temperature,
+          "Humidity: ",
+          humidity
+        );
 
         // Save to MongoDB
         const newWeather = new Weather({
           temperature: temperature,
-          humidity: parsedData.humidity,
+          humidity: humidity,
         });
 
         newWeather
@@ -67,9 +71,9 @@ mqttClient.on("message", (topic, message) => {
             console.error("Error saving weather data to MongoDB:", err);
           });
 
-        // Send the parsed temperature to all WebSocket clients
+        // Send the data to WebSocket clients
         clients.forEach((ws) => {
-          ws.send(JSON.stringify({ temperature }));
+          ws.send(JSON.stringify({ temperature, humidity }));
         });
       }
     } catch (error) {

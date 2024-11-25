@@ -1,5 +1,4 @@
-import "./App.css";
-import WeatherStation from "./components/WeatherData";
+import WeatherStation from "./components/WeatherStation";
 
 function App() {
   return (
