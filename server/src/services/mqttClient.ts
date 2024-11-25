@@ -1,390 +1,26 @@
-// import fs from "fs";
-// import mqtt from "mqtt";
-// import { websocketClients } from "./WebSocket";
-
-// const MQTT_BROKER_URL = "mqtt://localhost:1883";
-// const MQTT_TOPIC = "weather/data";
-
-// const setupMQTT = () => {
-//   const mqttClient = mqtt.connect(MQTT_BROKER_URL);
-
-//   mqttClient.on("connect", () => {
-//     console.log("Connected to MQTT broker");
-//     mqttClient.subscribe(MQTT_TOPIC, (err) => {
-//       if (err) {
-//         console.error("Error subscribing to MQTT topic:", err);
-//       } else {
-//         console.log(`Subscribed to MQTT topic: ${MQTT_TOPIC}`);
-//       }
-//     });
-//   });
-
-//   mqttClient.on("message", (topic, message) => {
-//     if (topic === MQTT_TOPIC) {
-//       try {
-//         const weatherData = JSON.parse(message.toString());
-//         console.log("Received weather data:", weatherData);
-
-//         // Save data to file
-//         fs.writeFile(
-//           "weatherData.json",
-//           JSON.stringify(weatherData, null, 2),
-//           (err) => {
-//             if (err) {
-//               console.error("Error saving weather data to file:", err);
-//             } else {
-//               console.log("Weather data successfully written to file.");
-//             }
-//           }
-//         );
-
-//         // Broadcast to WebSocket clients
-//         const dataToSend = JSON.stringify(weatherData);
-//         websocketClients.forEach((client) => {
-//           client.send(dataToSend);
-//         });
-//       } catch (err) {
-//         console.error("Error parsing MQTT message:", err);
-//       }
-//     }
-//   });
-
-//   return mqttClient;
-// };
-
-// export default setupMQTT;
-
-// import fs from "fs";
-// import mqtt from "mqtt";
-// import { websocketClients } from "./WebSocket";
-
-// const MQTT_BROKER_URL = "mqtt://192.168.1.109:1883";
-// const MQTT_TOPIC = "weather/temperature";
-
-// const setupMQTT = () => {
-//   const mqttClient = mqtt.connect(MQTT_BROKER_URL);
-
-//   mqttClient.on("connect", () => {
-//     console.log("Connected to MQTT broker");
-//     mqttClient.subscribe(MQTT_TOPIC, (err) => {
-//       if (err) {
-//         console.error("Error subscribing to MQTT topic:", err);
-//       } else {
-//         console.log(`Subscribed to MQTT topic: ${MQTT_TOPIC}`);
-//       }
-//     });
-//   });
-
-//   mqttClient.on("message", (topic, message) => {
-//     if (topic === MQTT_TOPIC) {
-//       try {
-//         // Try to parse the incoming message
-//         let weatherData;
-//         const messageStr = message.toString();
-
-//         // Check if the message is already JSON
-//         try {
-//           weatherData = JSON.parse(messageStr);
-//         } catch (e) {
-//           // If not JSON, create a JSON object
-//           weatherData = { temperature: parseFloat(messageStr) };
-//         }
-
-//         // Validate the data
-//         if (
-//           typeof weatherData.temperature !== "number" ||
-//           isNaN(weatherData.temperature)
-//         ) {
-//           throw new Error("Invalid temperature value");
-//         }
-
-//         console.log("Processed weather data:", weatherData);
-
-//         // Save data to file
-//         fs.writeFile(
-//           "weatherData.json",
-//           JSON.stringify(weatherData, null, 2),
-//           (err) => {
-//             if (err) {
-//               console.error("Error saving weather data to file:", err);
-//             } else {
-//               console.log("Weather data successfully written to file.");
-//             }
-//           }
-//         );
-
-//         // Broadcast to WebSocket clients
-//         const dataToSend = JSON.stringify(weatherData);
-//         websocketClients.forEach((client) => {
-//           if (client.readyState === client.OPEN) {
-//             try {
-//               client.send(dataToSend);
-//             } catch (error) {
-//               console.error("Failed to send data to WebSocket client:", error);
-//             }
-//           }
-//         });
-//       } catch (err) {
-//         console.error(
-//           "Error processing MQTT message:",
-//           err,
-//           "Raw message:",
-//           message.toString()
-//         );
-//       }
-//     }
-//   });
-
-//   return mqttClient;
-// };
-
-// export default setupMQTT;
-
-// import fs from "fs";
-// import mqtt from "mqtt";
-
-// const MQTT_BROKER_URL = "mqtt://192.168.1.109:1883";
-// const MQTT_TOPIC = "weather/temperature";
-
-// let weatherDataCache: { temperature: number | null } = { temperature: null };
-
-// const setupMQTT = () => {
-//   const mqttClient = mqtt.connect(MQTT_BROKER_URL);
-
-//   mqttClient.on("connect", () => {
-//     console.log("Connected to MQTT broker");
-//     mqttClient.subscribe(MQTT_TOPIC, (err) => {
-//       if (err) {
-//         console.error("Error subscribing to MQTT topic:", err);
-//       } else {
-//         console.log(`Subscribed to MQTT topic: ${MQTT_TOPIC}`);
-//       }
-//     });
-//   });
-
-//   mqttClient.on("message", (topic, message) => {
-//     if (topic === MQTT_TOPIC) {
-//       try {
-//         let weatherData;
-//         const messageStr = message.toString();
-
-//         // Check if the message is already JSON
-//         try {
-//           weatherData = JSON.parse(messageStr);
-//         } catch (e) {
-//           // If not JSON, create a JSON object with temperature
-//           weatherData = { temperature: parseFloat(messageStr) };
-//         }
-
-//         // Validate the data
-//         if (
-//           typeof weatherData.temperature !== "number" ||
-//           isNaN(weatherData.temperature)
-//         ) {
-//           throw new Error("Invalid temperature value");
-//         }
-
-//         console.log("Processed weather data:", weatherData);
-
-//         // Save data to file (optional)
-//         fs.writeFile(
-//           "weatherData.json",
-//           JSON.stringify(weatherData, null, 2),
-//           (err) => {
-//             if (err) {
-//               console.error("Error saving weather data to file:", err);
-//             } else {
-//               console.log("Weather data successfully written to file.");
-//             }
-//           }
-//         );
-
-//         // Cache the latest weather data for the REST API
-//         weatherDataCache = weatherData;
-//       } catch (err) {
-//         console.error(
-//           "Error processing MQTT message:",
-//           err,
-//           "Raw message:",
-//           message.toString()
-//         );
-//       }
-//     }
-//   });
-
-//   return mqttClient;
-// };
-
-// export default setupMQTT;
-
-// export { weatherDataCache };
-
-// import fs from "fs";
-// import mqtt from "mqtt";
-
-// // MQTT Broker settings
-// const MQTT_BROKER_URL = "mqtt://192.168.1.109:1883";
-// const MQTT_TOPIC = "weather/temperature";
-
-// // Cache to store weather data
-// let weatherDataCache: { temperature: number | null } = { temperature: null };
-
-// const setupMQTT = () => {
-//   const mqttClient = mqtt.connect(MQTT_BROKER_URL);
-
-//   mqttClient.on("connect", () => {
-//     console.log("Connected to MQTT broker");
-//     mqttClient.subscribe(MQTT_TOPIC, (err) => {
-//       if (err) {
-//         console.error("Error subscribing to MQTT topic:", err);
-//       } else {
-//         console.log(`Subscribed to MQTT topic: ${MQTT_TOPIC}`);
-//       }
-//     });
-//   });
-
-//   mqttClient.on("message", (topic, message) => {
-//     if (topic === MQTT_TOPIC) {
-//       try {
-//         let weatherData;
-//         const messageStr = message.toString();
-
-//         // Check if the message is already JSON
-//         try {
-//           weatherData = JSON.parse(messageStr);
-//         } catch (e) {
-//           // If not JSON, parse the message as a temperature value
-//           weatherData = { temperature: parseFloat(messageStr) };
-//         }
-
-//         // Validate the temperature data
-//         if (
-//           typeof weatherData.temperature !== "number" ||
-//           isNaN(weatherData.temperature)
-//         ) {
-//           throw new Error("Invalid temperature value");
-//         }
-
-//         console.log("Processed weather data:", weatherData);
-
-//         // Update cached weather data
-//         weatherDataCache = weatherData;
-
-//         // Optional: Save the data to a file (you can remove this if unnecessary)
-//         fs.writeFile(
-//           "weatherData.json",
-//           JSON.stringify(weatherData, null, 2),
-//           (err) => {
-//             if (err) {
-//               console.error("Error saving weather data to file:", err);
-//             } else {
-//               console.log("Weather data saved to file.");
-//             }
-//           }
-//         );
-//       } catch (err) {
-//         console.error(
-//           "Error processing MQTT message:",
-//           err,
-//           "Raw message:",
-//           message.toString()
-//         );
-//       }
-//     }
-//   });
-
-//   return mqttClient;
-// };
-
-// export default setupMQTT;
-// export { weatherDataCache }; // Export cached data for use in REST API
-
-// import fs from "fs";
-// import mqtt from "mqtt";
-
-// // MQTT Broker settings
-// const MQTT_BROKER_URL = "mqtt://192.168.1.109:1883";
-// const MQTT_TOPIC = "weather/temperature";
-
-// // Cache to store weather data
-// let weatherDataCache: { temperature: number | null } = { temperature: null };
-
-// const setupMQTT = () => {
-//   const mqttClient = mqtt.connect(MQTT_BROKER_URL);
-
-//   mqttClient.on("connect", () => {
-//     console.log("Connected to MQTT broker");
-//     mqttClient.subscribe(MQTT_TOPIC, (err) => {
-//       if (err) {
-//         console.error("Error subscribing to MQTT topic:", err);
-//       } else {
-//         console.log(`Subscribed to MQTT topic: ${MQTT_TOPIC}`);
-//       }
-//     });
-//   });
-
-//   mqttClient.on("message", (topic, message) => {
-//     if (topic === MQTT_TOPIC) {
-//       try {
-//         let weatherData;
-//         const messageStr = message.toString();
-
-//         // Check if the message is already JSON
-//         try {
-//           weatherData = JSON.parse(messageStr);
-//         } catch (e) {
-//           // If not JSON, parse the message as a temperature value
-//           weatherData = { temperature: parseFloat(messageStr) };
-//         }
-
-//         // Validate the temperature data
-//         if (
-//           typeof weatherData.temperature !== "number" ||
-//           isNaN(weatherData.temperature)
-//         ) {
-//           throw new Error("Invalid temperature value");
-//         }
-
-//         console.log("Processed weather data:", weatherData);
-
-//         // Update cached weather data
-//         weatherDataCache = weatherData;
-
-//         // Optional: Save the data to a file (you can remove this if unnecessary)
-//         fs.writeFile(
-//           "weatherData.json",
-//           JSON.stringify(weatherData, null, 2),
-//           (err) => {
-//             if (err) {
-//               console.error("Error saving weather data to file:", err);
-//             } else {
-//               console.log("Weather data saved to file.");
-//             }
-//           }
-//         );
-//       } catch (err) {
-//         console.error(
-//           "Error processing MQTT message:",
-//           err,
-//           "Raw message:",
-//           message.toString()
-//         );
-//       }
-//     }
-//   });
-
-//   return mqttClient;
-// };
-
-// export default setupMQTT;
-// export { weatherDataCache }; // Export cached data for use in REST API
-
+import mongoose from "mongoose";
 import mqtt from "mqtt";
 import WebSocket from "ws";
 
 const clients: WebSocket[] = [];
 
-const mqttClient = mqtt.connect("mqtt://192.168.1.109:1883");
+// MongoDB connection setup
+const mongoURI = "mongodb://localhost:27017/WeatherStation";
+// Connect to MongoDB
+mongoose
+  .connect(mongoURI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+// Weather data schema
+const weatherSchema = new mongoose.Schema({
+  temperature: { type: Number, required: true },
+  timestamp: { type: Date, default: Date.now },
+});
+
+const Weather = mongoose.model("Weather", weatherSchema);
+
+const mqttClient = mqtt.connect("mqtt://localhost:1883");
 
 mqttClient.on("connect", () => {
   console.log("Connected to MQTT broker");
@@ -415,6 +51,21 @@ mqttClient.on("message", (topic, message) => {
         );
       } else {
         console.log("Real-time Temperature received: ", temperature);
+
+        // Save to MongoDB
+        const newWeather = new Weather({
+          temperature: temperature,
+          humidity: parsedData.humidity,
+        });
+
+        newWeather
+          .save()
+          .then(() => {
+            console.log("Weather data saved to MongoDB");
+          })
+          .catch((err) => {
+            console.error("Error saving weather data to MongoDB:", err);
+          });
 
         // Send the parsed temperature to all WebSocket clients
         clients.forEach((ws) => {
