@@ -38,7 +38,7 @@ const weatherSchema = new mongoose.Schema({
 export const Weather = mongoose.model("Weather", weatherSchema);
 
 // Creates a connection to the MQTT broker using the provided IP address
-const mqttClient = mqtt.connect("mqtt://172.20.49.44:1883");
+const mqttClient = mqtt.connect("mqtt://172.16.1.144:1883");
 
 // Connect to MQTT and subscribe to topics
 // Listens for the successful connection to the MQTT broker

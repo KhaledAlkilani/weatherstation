@@ -7,7 +7,7 @@ import { setupWebSocketServer } from "./services/websocket";
 const port = 5000;
 
 const server: Server = app.listen(port, () => {
-  console.log(`Server listening on http://172.20.49.44:${port}`);
+  console.log(`Server listening on http://172.16.1.144:${port}`);
 });
 
 // WebSocket server
