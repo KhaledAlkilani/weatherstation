@@ -14,7 +14,8 @@ interface WeatherData {
 // Stores the most recent temperature and humidity values received from MQTT topics for use in WebSocket updates and database storage.
 let weatherData: WeatherData = { temperature: 0, humidity: 0 };
 
-// Clients array: Holds all active WebSocket clients connected to the server.
+// Clients array: Holds all active WebSocket clients connected to the server, such as web browser where we display received real-time weather data.
+// Other websocket clients could be: mobile applications or IoT device that sends or receives data.
 // These clients will receive real-time updates on weather data.
 const clients: WebSocket[] = [];
 
