@@ -6,6 +6,8 @@ Arduino Code: Captures temperature and humidity data using a DHT11 sensor and pu
 Backend: Handles MQTT communication, stores data in a MongoDB database, and serves real-time updates to clients through WebSockets.
 Frontend: A React-based web interface to display real-time temperature and humidity data along with a history of measurements.
 
+-----------------------------------------------------------------------------------------------------------------------
+
 Arduino Code Setup
 
 1. Hardware:
