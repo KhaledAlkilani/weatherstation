@@ -4,7 +4,7 @@ import temperatureIcon from "../assets/temperature-icon.svg";
 import humidityIcon from "../assets/humidity-icon.svg";
 import { fetchTemperatureHistory } from "../services/apiServices";
 
-const API_URL = "http://localhost:5000";
+const API_URL = `ws://${window.location.hostname}:5000`;
 
 const WeatherStation = () => {
   const [temperature, setTemperature] = useState<WeatherData | null>(null);

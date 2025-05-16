@@ -1,0 +1,42 @@
+import mqtt from "mqtt";
+import mqttTopics from "../config/mqttTopics.json";
+import valueSchema from "../config/mqttValueSchema.json";
+
+const BROKER_URL = process.env.MQTT_URL || "mqtt://172.16.2.141:1883";
+const client = mqtt.connect(BROKER_URL);
+
+// flatten your topics into an array of { key, topic }
+const entries = Object.values(mqttTopics)
+  .flatMap((section) => Object.entries(section))
+  .map(([key, topic]) => ({ key, topic }));
+
+// generic value generator based on schema
+const genValue = (key: string): number | boolean => {
+  const rule = (valueSchema as any)[key];
+  if (!rule) return Number(Math.random().toFixed(2));
+  if (rule.type === "boolean") {
+    return Math.random() < rule.chance ? 1 : 0;
+  }
+  // numeric case
+  const { min, max, decimals } = rule;
+  const v = Math.random() * (max - min) + min;
+  return Number(v.toFixed(decimals));
+};
+
+client.on("connect", () => {
+  console.log("Publisher connected to", BROKER_URL);
+
+  setInterval(() => {
+    entries.forEach(({ key, topic }) => {
+      const value = genValue(key);
+      const payload = JSON.stringify({ [key]: value });
+
+      client.publish(topic, payload, { retain: true }, (err) => {
+        if (err) console.error("Publish error:", err);
+        else console.log(`→ [pub] ${topic} → ${payload}`);
+      });
+    });
+  }, 10_000);
+});
+
+export default client;
