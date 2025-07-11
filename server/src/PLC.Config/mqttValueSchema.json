@@ -1,5 +1,5 @@
 {
   "temperature": { "min": -30, "max": 50, "decimals": 1 },
   "humidity": { "min": 0, "max": 100, "decimals": 0 },
-  "highTemp": { "type": "boolean", "chance": 0.1 }
+  "pressure": { "min": -200, "max": 800, "decimals": 0.1 }
 }

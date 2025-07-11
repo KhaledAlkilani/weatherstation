@@ -1,0 +1,30 @@
+{
+  "modbus": {
+    "host": "127.0.0.1",
+    "port": 502,
+    "unitId": 1,
+    "registers": [
+      {
+        "name": "temperature",
+        "address": 0,
+        "scale": 0.001,
+        "topic": "system/plc/weatherstation/temperature",
+        "unit": "°C"
+      },
+      {
+        "name": "humidity",
+        "address": 1,
+        "scale": 0.001,
+        "topic": "system/plc/weatherstation/humidity",
+        "unit": "%"
+      },
+      {
+        "name": "pressure",
+        "address": 2,
+        "scale": 0.01,
+        "topic": "system/plc/weatherstation/pressure",
+        "unit": "Pa"
+      }
+    ]
+  }
+}

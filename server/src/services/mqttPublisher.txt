@@ -1,8 +1,8 @@
 import mqtt from "mqtt";
-import mqttTopics from "../config/mqttTopics.json";
-import valueSchema from "../config/mqttValueSchema.json";
+import mqttTopics from "../PLC.Config/mqttTopics.json";
+import valueSchema from "../PLC.Config/mqttValueSchema.json";
 
-const BROKER_URL = process.env.MQTT_URL || "mqtt://172.16.2.141:1883";
+const BROKER_URL = process.env.MQTT_URL || "mqtt://127.0.0.1:1883";
 const client = mqtt.connect(BROKER_URL);
 
 // flatten your topics into an array of { key, topic }

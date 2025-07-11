@@ -1,9 +1,0 @@
-{
-  "weather": {
-    "temperature": "weather/temperature",
-    "humidity": "weather/humidity"
-  },
-  "alarm": {
-    "highTemp": "alarm/high_temp"
-  }
-}

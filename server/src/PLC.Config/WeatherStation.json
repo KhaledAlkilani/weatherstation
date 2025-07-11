@@ -1,0 +1,30 @@
+{
+  "temperature": {
+    "modbusRegister": 502,
+    "mqttTopic": "system/plc/weatherstation/temperature",
+    "unit": "°C",
+    "type": "number",
+    "min": -30,
+    "max": 50,
+    "decimals": 1
+  },
+  "humidity": {
+    "modbusRegister": 504,
+    "mqttTopic": "system/plc/weatherstation/humidity",
+    "unit": "%",
+    "type": "number",
+    "min": 0,
+    "max": 100,
+    "decimals": 0
+  },
+  "pressure": {
+    "modbusRegister": 506,
+    "mqttTopic": "system/plc/weatherstation/pressure",
+    "unit": "hPa",
+    "type": "number",
+    "min": 200,
+    "max": 1200,
+    "decimals": 0.1
+  }
+}
+

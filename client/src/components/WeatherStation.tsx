@@ -1,109 +1,60 @@
 import { useState, useEffect } from "react";
 import { WeatherData } from "../models/WeatherModel";
-import temperatureIcon from "../assets/temperature-icon.svg";
+import weatherDataIcon from "../assets/temperature-icon.svg";
 import humidityIcon from "../assets/humidity-icon.svg";
-import { fetchTemperatureHistory } from "../services/apiServices";
 
 const API_URL = `ws://${window.location.hostname}:5000`;
 
 const WeatherStation = () => {
-  const [temperature, setTemperature] = useState<WeatherData | null>(null);
-  const [temperatureHistoryList, setTemperatureHistoryList] = useState<
-    WeatherData[]
-  >([]);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
 
   useEffect(() => {
     const ws = new WebSocket(API_URL);
 
     ws.onopen = () => {
       console.log("WebSocket connected");
-      ws.send("getTemperature");
+      ws.send("getweatherData");
     };
 
     ws.onmessage = (event: MessageEvent) => {
       const data = JSON.parse(event.data);
 
-      // Check if both temperature and humidity are present
-      if (data.temperature && data.humidity) {
-        // Set temperature for real-time display
-        setTemperature({
+      // Check if both weatherData and humidity are present
+      if (data.temperature && data.humidity && data.pressure) {
+        // Set weatherData for real-time display
+        setWeatherData({
           temperature: data.temperature,
           humidity: data.humidity,
+          pressure: data.pressure,
           timestamp: new Date().toISOString(),
         });
-
-        // Update temperature history
-        setTemperatureHistoryList((prevHistory) => [
-          ...prevHistory,
-          {
-            temperature: data.temperature,
-            humidity: data.humidity,
-            timestamp: new Date().toISOString(),
-          },
-        ]);
       }
     };
 
     ws.onclose = () => {
       console.log("WebSocket closed");
     };
-
-    // Fetch temperature history when the component mounts
-    const fetchHistory = async () => {
-      try {
-        const data = await fetchTemperatureHistory();
-        setTemperatureHistoryList(data);
-      } catch (error) {
-        console.error("Failed to fetch temperature history:", error);
-      }
-    };
-
-    fetchHistory();
-
-    // Set interval to fetch temperature history every 5 seconds
-    const intervalId = setInterval(() => {
-      fetchHistory();
-    }, 5000); // 5000 ms = 5 seconds
-
-    // Cleanup function: Remove WebSocket closing here to keep it open while component is mounted
-    return () => {
-      clearInterval(intervalId); // Clear the interval
-    };
   }, []);
 
   return (
     <div style={containerStyle}>
       <h1 style={styles.title}>Weather Station</h1>
-      {temperature ? (
-        <div style={styles.temperatureAndIcon}>
-          <img src={temperatureIcon} alt="Temperature icon" width={30} />
-          <p style={styles.temperature}>
-            Current Temperature: {temperature.temperature} °C
+      {weatherData ? (
+        <div style={styles.weatherDataAndIcon}>
+          <img src={weatherDataIcon} alt="weatherData icon" width={30} />
+          <p style={styles.weatherData}>
+            Current weatherData: {weatherData.temperature}
           </p>
           <img src={humidityIcon} alt="Humidity icon" width={30} />
-          <p style={styles.humidity}>Humidity: {temperature.humidity} %</p>
+          <p style={styles.humidity}>Humidity: {weatherData.humidity}</p>
+          <img src={humidityIcon} alt="Humidity icon" width={30} />
+          <p style={styles.humidity}>Pressure: {weatherData.pressure}</p>
         </div>
       ) : (
         <p style={{ color: "rgba(255, 255, 255, 0.87)" }}>
           Loading weather data...
         </p>
       )}
-      {/* Show the temperature history */}
-      <div style={historyList}>
-        <h2 style={styles.historyTitle}>Temperature History</h2>
-        {temperatureHistoryList.length > 0 ? (
-          <ul style={styles.historyList}>
-            {temperatureHistoryList.map((entry, index) => (
-              <li key={index} style={styles.historyItem}>
-                <span>{new Date(entry.timestamp).toLocaleString()}</span> -{" "}
-                {entry.temperature} °C
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p style={{ color: "white" }}>No temperature history available</p>
-        )}
-      </div>
     </div>
   );
 };
@@ -111,7 +62,7 @@ const WeatherStation = () => {
 export default WeatherStation;
 
 const styles = {
-  temperatureAndIcon: {
+  weatherDataAndIcon: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -122,7 +73,7 @@ const styles = {
     fontSize: "3.2em",
     lineHeight: 1.1,
   },
-  temperature: {
+  weatherData: {
     fontSize: 22,
     color: "rgba(255, 255, 255, 0.87)",
   },
@@ -153,13 +104,4 @@ const containerStyle: React.CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "column",
-};
-
-const historyList: React.CSSProperties = {
-  marginTop: 20,
-  color: "white",
-  display: "flex",
-  flexDirection: "column",
-  maxHeight: "340px",
-  overflowY: "hidden",
 };

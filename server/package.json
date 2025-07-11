@@ -13,6 +13,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
+    "modbus-serial": "^8.0.21-no-serial-port",
     "mongoose": "^8.8.2",
     "mqtt": "^5.10.2",
     "nodemon": "^3.1.7",

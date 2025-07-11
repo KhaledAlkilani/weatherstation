@@ -1,0 +1,5 @@
+{
+  "temperature": { "unit": "°C", "type": "number" },
+  "humidity": { "unit": "%", "type": "number" },
+  "pressure": { "unit": "Pa", "type": "number" }
+}

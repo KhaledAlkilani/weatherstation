@@ -1,0 +1,7 @@
+{
+  "weather": {
+    "temperature": "system/plc/weatherstation/temperature",
+    "humidity": "system/plc/weatherstation/humidity",
+    "pressure": "system/plc/weatherstation/pressure"
+  }
+}
